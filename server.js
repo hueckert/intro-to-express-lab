@@ -9,13 +9,15 @@ const express = require('express')
 const app = express()
 
 
-
+// 1. Be Polite, Greet the User
 
 // Define routes here (we'll add them soon)
 
 app.get('/greetings/:username',  (req, res) => {
     res.send(`<h1>How you do'n ${req.params.username}.`)
 })
+
+// 2. Rolling the Dice
 
 app.get('/roll/:number', (req, res) => {
     const number = parseInt(req.params.number, 10);
@@ -27,6 +29,8 @@ app.get('/roll/:number', (req, res) => {
     const randomRoll = Math.floor(Math.random() * (number + 1));
     res.send(`You rolled a ${randomRoll}.`);
   });
+
+  // 3. I Want THAT One!
 
   const collectibles = [
     { name: 'shiny ball', price: 5.95 },
@@ -42,6 +46,41 @@ app.get('/roll/:number', (req, res) => {
     }
 })
 
+// 4. Filter Shoes by Query Parameters
+
+const shoes = [
+    { name: "Birkenstocks", price: 50, type: "sandal" },
+    { name: "Air Jordans", price: 500, type: "sneaker" },
+    { name: "Air Mahomeses", price: 501, type: "sneaker" },
+    { name: "Utility Boots", price: 20, type: "boot" },
+    { name: "Velcro Sandals", price: 15, type: "sandal" },
+    { name: "Jet Boots", price: 1000, type: "boot" },
+    { name: "Fifty-Inch Heels", price: 175, type: "heel" }
+];
+
+// Route to filter shoes
+app.get('/shoes', (req, res) => {
+    const { minPrice, maxPrice, type } = req.query;
+  
+    let filteredShoes = shoes;
+  
+    // Filter by minimum price 
+    if (minPrice) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.price >= parseFloat(minPrice));
+    }
+  
+    // Filter by maximum price 
+    if (maxPrice) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.price <= parseFloat(maxPrice));
+    }
+  
+    // Filter by type 
+    if (type) {
+      filteredShoes = filteredShoes.filter(shoe => shoe.type.toLowerCase() === type.toLowerCase());
+    }
+  
+    res.send(filteredShoes);
+  });
 
 // Listen for requests on port 3000
 app.listen(3000, () => {
